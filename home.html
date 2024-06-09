@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to D-kart</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #333;
+      color: white;
+    }
+
+    .add-to-cart, .delete {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .add-to-cart:hover, .delete:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="#">Home</a>
+      <h1>Welcome to D-kart</h1>
+      <div>
+        <a href="#">Login</a>
+        <a href="#">Signup</a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    <form id="product-form" action="insert_product.php" method="POST" >
+      <label for="productName">Product Name:</label>
+      <input name="productName" type="text" id="productName" placeholder="Enter product name" required>
+    
+      <label for="quantity">Quantity:</label>
+      <input  name="quantity" type="number" id="quantity" placeholder="Enter quantity" required>
+        <br>
+      <label for="price">Price:</label>
+      <input name="price" type="number" id="price" placeholder="Enter price" required>
+       <br>
+      <label for="review">Review:</label>
+      <input name="review" type="text" id="review" placeholder="Enter review" required>
+       <br>
+       
+      <button type="submit" >Add Product</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Review</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="product-list">
+        <!-- Product rows will be inserted here dynamically -->
+      </tbody>
+    </table>
+  
+    <button class="add-to-cart" onclick="addToCart()">Add to Cart</button>
+    <button class="delete" onclick="deleteSelected()">Delete Selected</button>
+   
+  </div>
+
+  <script>
+    let products = [];
+
+    function addProduct() {
+      const productName = document.getElementById('productName').value;
+      const quantity = document.getElementById('quantity').value;
+      const price = document.getElementById('price').value;
+      const review = document.getElementById('review').value;
+
+      if (productName && quantity && price && review) {
+        products.push({ name: productName, quantity, price, review });
+
+        renderProducts();
+        document.getElementById('productName').value = '';
+        document.getElementById('quantity').value = '';
+        document.getElementById('price').value = '';
+        document.getElementById('review').value = '';
+      } else {
+        alert('Please fill in all fields');
+      }
+    }
+    function renderProducts() {
+      const productList = document.getElementById('product-list');
+      productList.innerHTML = '';
+
+      products.forEach(product => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${product.name}</td>
+          <td>${product.quantity}</td>
+          <td>${product.price}</td>
+          <td>${product.review}</td>
+          <td><input type="checkbox" data-product="${product.name}"></td>
+        `;
+        productList.appendChild(row);
+      });
+    }
+    function addToCart() {
+      const selectedProducts = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(checkbox => checkbox.getAttribute('data-product'));
+      console.log('Selected Products:', selectedProducts);
+    }
+    function deleteSelected() {
+      const selectedProducts = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(checkbox => checkbox.getAttribute('data-product'));
+      console.log('Deleted Products:', selectedProducts);
+      products = products.filter(product => !selectedProducts.includes(product.name));
+      renderProducts();
+    }
+    renderProducts();
+  </script>
+</body>
+</html>
